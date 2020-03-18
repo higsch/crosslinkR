@@ -20,7 +20,7 @@ analyse_crosslinks <- function (file,
                      quote = "",
                      as.is = TRUE,
                      stringsAsFactors = FALSE)
-  message("Data dimensions: ", dim(data))
+  message("Data dimensions: ", nrow(data), " x ", ncol(data))
   
   # repair headers
   headers <- data[1, ]
@@ -39,13 +39,24 @@ analyse_crosslinks <- function (file,
     mutate(hasDrra = grepl(drra, Protein)) %>% # check if DrrA is present
     mutate(isCrosslink = hasRab & hasDrra) %>%  # check if both are present
     mutate(isDecoy = grepl(decoy, Protein)) %>% # check if it's a decoy
-    mutate(qValue = NA) %>%
-    mutate(isHit = isCrosslink & !isDecoy) # identify hit
+    mutate(isHit = isCrosslink & !isDecoy) %>% # identify hit
+    mutate(cumFDR = NA) %>%
+    mutate(qValue = NA)
   
-  # calculate q-value
+  # calculate cumulative FDR
   for (i in 1:nrow(data_uni)) {
     isDecoy <- data_uni[1:i, "isDecoy"]
-    data_uni[i, "qValue"] <- sum(isDecoy) / sum(!isDecoy)
+    data_uni[i, "cumFDR"] <- sum(isDecoy) / sum(!isDecoy)
+  }
+  
+  # calculate q-value
+  min_fdr <- max(data_uni$cumFDR)
+  for (i in nrow(data_uni):1) {
+    cum_fdr <- data_uni[i, "cumFDR"]
+    if (cum_fdr < min_fdr) {
+      min_fdr <- cum_fdr
+    }
+    data_uni[i, "qValue"] <- min_fdr
   }
   
   # extract all hits
