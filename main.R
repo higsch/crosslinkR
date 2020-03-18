@@ -1,18 +1,26 @@
+# crosslink analysis for Marie (Kathrin Lang Lab)
+
+# dependencies
 library(tidyverse)
 library(data.table)
 library(ggthemes)
 
 source("analyse_crosslinks.R")
 
+
+# global theme for plots
 theme_set(theme_tufte())
 
-name <- "confirmation"
+
+# constants
+name          <- "confirmation"
 output_folder <- "output"
-decoy <- "Decoy_"
-rab <- "sp\\|Q9H0U4\\|RAB1B"
-drra <- "sp\\|Q29ST3\\|DRRA"
+decoy         <- "Decoy_"
+rab           <- "sp\\|Q9H0U4\\|RAB1B"
+drra          <- "sp\\|Q29ST3\\|DRRA"
 
 
+# analyse
 initial <- analyse_crosslinks(file = file.path("..", "initial_detection", "rerun", "20180207_MS_Rab1b_DrrA_complex_SEC_crosslinks.perc.inter.txt"),
                               decoy = decoy,
                               rab = rab,

@@ -5,10 +5,13 @@ analyse_crosslinks <- function (file,
                                 name,
                                 output_folder) {
   
+  # create output folder
   if (!dir.exists(output_folder)) dir.create(output_folder, recursive = TRUE)
   
+  # determine number of columns in input file
   column_number <- max(count.fields(file = file, sep = "\t"))
   
+  # read data
   data <- read.table(file = file,
                      sep = "\t",
                      fill = TRUE,
@@ -17,25 +20,27 @@ analyse_crosslinks <- function (file,
                      quote = "",
                      as.is = TRUE,
                      stringsAsFactors = FALSE)
+  message("Data dimensions: ", dim(data))
   
+  # repair headers
   headers <- data[1, ]
   headers[headers == ""] <- paste("Proteins_", 2:(sum(headers == "") + 1), sep = "")
   colnames(data) <- headers
   data <- data[-1, ]
   
-  # aggregate protein names, find crosslink
+  # analyse
   data_uni <- data %>%
     unite(Protein, starts_with("Protein"), sep = "__") %>%
-    mutate(Protein = gsub("_*$", "", Protein)) %>%
-    mutate_at(.var = c(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), .funs = as.numeric) %>%
-    arrange(desc(Score)) %>%
-    mutate(order = 1:nrow(.)) %>%
-    mutate(hasRab = grepl(rab, Protein)) %>%
-    mutate(hasDrra = grepl(drra, Protein)) %>%
-    mutate(isCrosslink = hasRab & hasDrra) %>%
-    mutate(isDecoy = grepl(decoy, Protein)) %>%
+    mutate(Protein = gsub("_*$", "", Protein)) %>% # aggregate protein names
+    mutate_at(.var = c(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), .funs = as.numeric) %>% # make numerical columns numeric
+    arrange(desc(Score)) %>% # sort by score
+    mutate(order = 1:nrow(.)) %>% # introduce order numbers
+    mutate(hasRab = grepl(rab, Protein)) %>% # check if Rab is present
+    mutate(hasDrra = grepl(drra, Protein)) %>% # check if DrrA is present
+    mutate(isCrosslink = hasRab & hasDrra) %>%  # check if both are present
+    mutate(isDecoy = grepl(decoy, Protein)) %>% # check if it's a decoy
     mutate(qValue = NA) %>%
-    mutate(isHit = isCrosslink & !isDecoy)
+    mutate(isHit = isCrosslink & !isDecoy) # identify hit
   
   # calculate q-value
   for (i in 1:nrow(data_uni)) {
