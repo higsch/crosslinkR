@@ -21,7 +21,7 @@ drra          <- "sp\\|Q29ST3\\|DRRA"
 
 
 # analyse
-initial <- analyse_crosslinks(file = file.path("..", "initial_detection", "rerun", "20180207_MS_Rab1b_DrrA_complex_SEC_crosslinks.perc.inter.txt"),
+initial <- analyse_crosslinks(file = file.path("..", "initial_detection", "rerun", "20180207_Rab_DrrA.perc.inter.txt"),
                               decoy = decoy,
                               rab = rab,
                               drra = drra,
@@ -29,7 +29,7 @@ initial <- analyse_crosslinks(file = file.path("..", "initial_detection", "rerun
                               output_folder = file.path(output_folder, "initial_detection"))
 
 
-confirm <- analyse_crosslinks(file = file.path("..", "confirmation", "rerun", "20180710_Marie.perc.inter.txt"),
+confirm <- analyse_crosslinks(file = file.path("..", "confirmation", "rerun", "20180710_D82C_confirmation.perc.inter.txt"),
                               decoy = decoy,
                               rab = rab,
                               drra = drra,

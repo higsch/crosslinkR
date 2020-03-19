@@ -64,7 +64,7 @@ analyse_crosslinks <- function (file,
     filter(isHit == TRUE) %>%
     separate(Protein, into = c("Protein_1", "Protein_2"), sep = "__") %>%
     mutate_at(.vars = c("Protein_1", "Protein_2"), .funs = function (x) if_else(grepl(rab, x), "Rab", if_else(grepl(drra, x), "DrrA", "unknown"))) %>%
-    select(Protein_1, Protein_2, Peptide, Score, qValue)
+    select(scannr, Protein_1, Protein_2, Peptide, Score, qValue)
   
   # write hits
   write.table(x = hits,
