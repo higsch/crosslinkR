@@ -46,7 +46,7 @@ analyse_crosslinks <- function (file,
   # calculate cumulative FDR
   for (i in 1:nrow(data_uni)) {
     isDecoy <- data_uni[1:i, "isDecoy"]
-    data_uni[i, "cumFDR"] <- sum(isDecoy) / sum(!isDecoy)
+    data_uni[i, "cumFDR"] <- (sum(isDecoy) / 3) / (sum(!isDecoy))
   }
   
   # calculate q-value
