@@ -9,11 +9,10 @@ source("analyse_crosslinks.R")
 
 
 # global theme for plots
-theme_set(theme_tufte())
+theme_set(theme_bw())
 
 
 # constants
-name          <- "confirmation"
 output_folder <- "output"
 decoy         <- "Decoy_"
 rab           <- "sp\\|Q9H0U4\\|RAB1B"

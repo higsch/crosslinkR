@@ -39,6 +39,7 @@ analyse_crosslinks <- function (file,
     mutate(hasDrra = grepl(drra, Protein)) %>% # check if DrrA is present
     mutate(isCrosslink = hasRab & hasDrra) %>%  # check if both are present
     mutate(isDecoy = grepl(decoy, Protein)) %>% # check if it's a decoy
+    # mutate(isDecoy = Label == -1) %>%
     mutate(isHit = isCrosslink & !isDecoy) %>% # identify hit
     mutate(cumFDR = NA) %>%
     mutate(qValue = NA)
@@ -79,7 +80,9 @@ analyse_crosslinks <- function (file,
     geom_density(aes(Score, group = isDecoy, color = isDecoy)) +
     scale_color_manual(values = c("#78c4c1", "#eb470c")) +
     geom_density(aes(Score), color = "#808d9c") +
-    geom_point(data = hits, aes(x = Score, y = 0), color = "#247ee3", size = 3, alpha = .7) +
+    geom_point(data = hits, aes(x = Score, y = -0.01), color = "#247ee3", size = 3, alpha = .7) +
+    xlab("Score") +
+    ylab("Density") +
     ggtitle(label = "Score density and hits")
   
   pdf(file = file.path(output_folder, paste0("score_density_", name, ".pdf")))
